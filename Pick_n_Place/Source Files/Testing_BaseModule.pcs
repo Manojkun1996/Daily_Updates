@@ -1,0 +1,29 @@
+'!TITLE "Robot program"
+Sub Main 
+	TakeArm Keep = 1
+	APPROACH P, P1, 50
+	HandMoveA 30, 100
+	MOVE P, P1
+	HandMoveAH 22, 20, 20
+	DEPART L, @P 50
+	MOVE P, P2
+	MOVE L, P3
+	HandMoveA 30, 100
+	MOVE L, P2
+	DELAY 1000
+	MOVE L, P3
+	HandMoveAH 22, 20, 20
+	MOVE L, P2
+	APPROACH P, P1, 50
+	MOVE L, P1
+	HandMoveA 30, 100
+	DEPART L, @P 50
+	
+End Sub
+
+
+
+	
+
+
+

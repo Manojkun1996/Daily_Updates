@@ -1,0 +1,99 @@
+'!TITLE "EVP2(EasyVisionPicking2) template"
+
+' Approach length	50mm
+' Depart length		50mm
+
+' Robot-standby position	    P[4] (Make sure that the camera's view is not interfered with the robot, since the shooting takes place at P[4].)
+' Position to place             P[2]
+
+' Camera shooting & Image processing & Obtain the workpiece position, and Set below variables by EVP2Run.
+' Number of detected workpiece		I[1]
+' Position of detected workpiece	P[3], ... , P[3 + Number of detected workpiece -1]
+
+' Program flow
+' Move to P[4] -> Camera shooting & Image processing -> Shuttle between the detected workpiece's position and P[2]. (Repeat it up to the number of detected workpiece) -> Move to P[4]
+
+#Include "Variant.h"
+
+Dim ctrl As Object
+
+Sub Main
+	Dim EVP2ProjectName As String
+	Dim WorkHeight As Single
+	Dim RobotWaitNumber As Integer
+	Dim PlaceNumber As Integer
+	Dim NumberOfWorks As Integer
+	Dim WorkPlaceNumber As Integer
+	Dim PickingAdjustID As Integer
+	Dim index As Long
+	
+	EVP2ProjectName = "project"                                                                                                              ' EVP2 Project File Name
+	WorkHeight = 20                                                                                                                          ' Height from a workpiece [mm]
+	RobotWaitNumber = 4                                                                                                                      ' P Variable number of Robot-standby position
+	PlaceNumber = 2                                                                                                                          ' P Variable number (Place position)
+	NumberOfWorks = 1                                                                                                                        ' I Variable start number of the number of workpieces found (Please match the number you set in the EVP2 Guidance.)
+	WorkPlaceNumber = 3                                                                                                                      ' P Variable start number of the number of workpieces found (Please match the number you set in the EVP2 Guidance.)
+	PickingAdjustID = 1                                                                                                                      ' ID No. of PA(Picking Adjustment) data
+	
+	TakeArm Keep = 0
+	
+	' EVP2 initialization setting.(Select an EVP2 project file)
+	Call EVP2Initialize(EVP2ProjectName)
+	
+	' Move to the robot-standby position P[4]
+	Move P, P[RobotWaitNumber] 
+	
+	' Camera shooting & Image processing & Obtain the workpiece position.
+	Call EVP2Run(NumberOfWorks, WorkPlaceNumber, WorkHeight, PickingAdjustID)
+	
+	' Repeat the processing up to the number of detected workpiece.
+	For index = 0 To I[NumberOfWorks] - 1
+		
+		'------- Move to the detected workpiece -------------------------
+		'Approach motion. Approach 50mm above of P[3 + index]
+		Approach P, P[WorkPlaceNumber + index], @0 50
+		' Descending motion. Move to P[3 + index].
+		Move L, @C P[WorkPlaceNumber + index] 
+		' Write any robot motion (e.g.: Chuck, Unchuck) here, if necessary.
+		Delay 500
+		' Ascending motion.    50mm
+		Depart L, @0 50
+		
+		'------- Motion at the placing position -------------------------
+		'Approach motion.  Approach 50mm above of P[2]
+		Approach P, P[PlaceNumber], @0 50
+		' Descending motion. Move to P[2]
+		Move L, @C P[PlaceNumber] 
+		' Write any robot motion (e.g.: Chuck, Unchuck) here, if necessary.
+		Delay 500
+		' Ascending motion   50mm
+		Depart L, @0 50
+	Next
+	' Move to the robot-standby position
+	Move P, P[RobotWaitNumber] 
+End Sub
+
+Sub EVP2Initialize(ByVal EVP2ProjectName as String)
+	' Create EVP2 object.
+	ctrl = Cao.AddController("Runner", "CaoProv.DENSO.EVP2", "", "@IfnotMember")
+	
+	' Switch project files while the program is running.
+	ctrl.LoadFile EVP2ProjectName
+End Sub
+
+Sub EVP2Run(ByVal NumberOfWorks As Integer, ByVal WorkPlaceNumber As Integer, ByVal WorkHeight As Integer, ByVal PickingAdjustID As Integer)
+	Dim index As Long
+	
+	' Run image processing.
+	ctrl.Run
+	
+	' Set the workpiece position to P[3], ..., P[3 + Number of detected workpiece - 1].
+	For index = 0 To I[NumberOfWorks] - 1
+		
+		' PA(Picking Adjustment)
+		' P[WorkPlaceNumber + index] = PickingAdjustmentConvPos(PickingAdjustID, P[WorkPlaceNumber + index])
+		
+		' Set the height from the workpiece to P[3], ..., P[3 + Number of detected workpiece - 1]
+		LetZ P[WorkPlaceNumber + index] = PosZ(P[WorkPlaceNumber + index] ) + WorkHeight
+	Next
+End Sub

@@ -1,0 +1,72 @@
+Sub Main
+
+	TakeArm Keep = 1
+	APPROACH P, P1, 50
+	HandMoveA 30, 100
+	MOVE L, P1
+	HandMoveAH 22, 20, 20
+	DEPART L, @P 50
+	MOVE P, P2
+	MOVE L, P3
+	HandMoveA 30, 100
+	DELAY 500
+	HandMoveAH 22, 20, 20
+	MOVE L, P2
+	APPROACH P, P1, 50
+	MOVE L, P1
+	HandMoveA 30, 100
+	DEPART L, @P 50
+
+	TakeArm Keep = 1
+	APPROACH P, P4, 50
+	HandMoveA 30, 100
+	MOVE L, P4
+	HandMoveAH 22, 20, 20
+	DEPART L, @P 50
+	MOVE P, P2
+	MOVE L, P3
+	HandMoveA 30, 100
+	DELAY 500
+	HandMoveAH 22, 20, 20
+	MOVE L, P2
+	APPROACH P, P4, 50
+	MOVE L, P4
+	HandMoveA 30, 100
+	DEPART L, @P 50
+
+	TakeArm Keep = 1
+	APPROACH P, P5, 50
+	HandMoveA 30, 100
+	MOVE L, P5
+	HandMoveAH 22, 20, 20
+	DEPART L, @P 50
+	MOVE P, P2
+	MOVE L, P3
+	HandMoveA 30, 100
+	DELAY 500
+	HandMoveAH 22, 20, 20
+	MOVE L, P2
+	APPROACH P, P5, 50
+	MOVE L, P5
+	HandMoveA 30, 100
+	DEPART L, @P 50
+
+	TakeArm Keep = 1
+	APPROACH P, P6, 50
+	HandMoveA 30, 100
+	MOVE L, P6
+	HandMoveAH 22, 20, 20
+	DEPART L, @P 50
+	MOVE P, P2
+	MOVE L, P3
+	HandMoveA 30, 100
+	DELAY 500
+	HandMoveAH 22, 20, 20
+	MOVE L, P2
+	APPROACH P, P6, 50
+	MOVE L, P6
+	HandMoveA 30, 100
+	DEPART L, @P 50
+
+End Sub
+

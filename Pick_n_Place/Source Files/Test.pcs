@@ -1,0 +1,62 @@
+'!TITLE Peudo code - Base Module
+
+'#include "VAR_TAB.h"
+'#include "DIO_TAB.h"
+'#include "CONST_TAB.h"
+'#include "Scale_TAB.h"
+
+'Variable Declarations
+Dim can_count as Integer = 50
+Dim weight as Double = 0
+Dim tolerance as Double = 0.1
+Dim can_dim as Double = 21
+Dim can_weight as Double = 7.2
+
+Sub Main
+	
+	'Connect to Scale
+	Connect_Scale_Mettler_XPR_205_DR()
+
+	'Reset Scale
+	Reset_Scale()
+
+	'Print Zeroing Value
+	Print_Zeroing()
+
+	'Open Side Doors
+	Open_Side_Doors()
+
+	'Move Robot to Can Rack
+	Move_robot_can()
+
+	'Loop through all cans
+	FOR i = 1 TO can_count
+	    'Move Robot to Pick up Can
+	    Move_robot_can[i]()
+    
+	    'Close Gripper to Pick up Can
+	    Gripper_Close()
+    
+	    'Move Robot to Scale
+	    Move_robot_scale()
+    
+	    'Close Side Doors
+	    Close_Side_Doors()
+    
+	    'Wait for Scale to Stabilize
+	    WaitTime 500
+
+	    'Read Weight from Scale
+	    weight = ReadScale()
+
+	    'Print Weight
+	    Print_Weight()
+    
+	    'Open Side Doors
+	    Open_Doors()
+    
+	    'Move Robot to Rack
+	    Move_robot_rack()                                                                                         
+
+'End of Program
+END sub
